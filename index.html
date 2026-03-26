@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diseño de Embudos de Venta | Simoné</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vo: #1c3a10;
+    --v: #2d5a1b;
+    --vm: #4a7c2f;
+    --vc: #b8d46a;
+    --cr: #f5f0e8;
+    --cr2: #ede5d5;
+    --oro: #c9a84c;
+    --oro2: #e8c96a;
+    --text: #2a2a2a;
+    --muted: #7a7a6a;
+    --border: #d4c9b0;
+    --white: #ffffff;
+    --shadow: 0 2px 16px rgba(28,58,16,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--cr); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .page-header {
+    background: var(--vo);
+    padding: 28px 48px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header::before {
+    content: '';
+    position: absolute; top: -50px; right: -30px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: rgba(184,212,106,0.07);
+  }
+  .header-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .page-badge {
+    background: var(--vc);
+    color: var(--vo);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .page-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .save-pill {
+    margin-left: auto;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--vc);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .save-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--vc); animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  /* TABS */
+  .tabs-bar {
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    padding: 0 48px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .tab-btn {
+    padding: 16px 24px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: -2px;
+  }
+  .tab-btn:hover { color: var(--vo); }
+  .tab-btn.active {
+    color: var(--vo);
+    border-bottom-color: var(--vc);
+    font-weight: 600;
+  }
+  .tab-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+  .tab-btn.active .tab-dot { background: var(--vc); }
+  .tab-btn:not(.active) .tab-dot { background: var(--border); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* MAIN CONTAINER */
+  .main { max-width: 1200px; margin: 0 auto; padding: 32px 48px 80px; }
+
+  /* EMBUDO CANVAS */
+  .funnel-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+  .funnel-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+    padding-top: 8px;
+  }
+  .funnel-stage-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+    padding: 4px 0;
+  }
+  .funnel-stage-visual:hover { transform: scale(1.03); }
+  .funnel-trapeze {
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--white);
+    transition: all 0.2s;
+    position: relative;
+  }
+  .funnel-stage-visual.active .funnel-trapeze {
+    box-shadow: 0 4px 12px rgba(28,58,16,0.3);
+    transform: scale(1.05);
+  }
+  .funnel-connector {
+    width: 2px;
+    height: 8px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .funnel-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    text-align: center;
+    max-width: 130px;
+    line-height: 1.3;
+  }
+
+  /* STAGE DETAIL */
+  .stage-detail {
+    padding: 0 0 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .stage-panel {
+    display: none;
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    animation: fadeIn 0.25s ease;
+  }
+  .stage-panel.active { display: block; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+
+  .stage-panel-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--cr2);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .stage-icon-big {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .stage-panel-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--vo); }
+  .stage-panel-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .stage-panel-body { padding: 20px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-group.full { grid-column: 1 / -1; }
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--vm);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .field-input, .field-textarea {
+    width: 100%;
+    background: var(--cr);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: all 0.2s;
+    line-height: 1.5;
+  }
+  .field-input:focus, .field-textarea:focus {
+    border-color: var(--vm);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(74,124,47,0.1);
+  }
+  .field-textarea { resize: vertical; min-height: 76px; }
+  .field-input::placeholder, .field-textarea::placeholder { color: #b5ac9e; }
+
+  /* SCORE BAR */
+  .score-section {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .score-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--vo);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .metric-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .metric-row:last-child { margin-bottom: 0; }
+  .metric-label { font-size: 13px; color: var(--text); min-width: 160px; flex-shrink: 0; }
+  .metric-bar-wrap { flex: 1; height: 10px; background: var(--cr2); border-radius: 5px; overflow: hidden; }
+  .metric-bar { height: 100%; border-radius: 5px; transition: width 0.5s; }
+  .metric-val { font-size: 13px; font-weight: 600; color: var(--vo); min-width: 30px; text-align: right; }
+  .metric-input-num {
+    width: 52px;
+    background: var(--cr);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--vo);
+    text-align: center;
+    outline: none;
+  }
+  .metric-input-num:focus { border-color: var(--vm); }
+
+  /* RESUMEN VISUAL */
+  .resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .resumen-stage-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .resumen-stage-card:hover { border-color: var(--vm); transform: translateY(-2px); }
+  .resumen-stage-icon { font-size: 22px; margin-bottom: 6px; }
+  .resumen-stage-name { font-size: 12px; font-weight: 600; color: var(--vo); margin-bottom: 3px; }
+  .resumen-stage-val { font-size: 11px; color: var(--muted); }
+
+  .funnel-svg-wrap { display: flex; justify-content: center; margin-bottom: 24px; }
+
+  /* EXPORT */
+  .export-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0 0;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn-primary { background: var(--vo); color: white; }
+  .btn-primary:hover { background: var(--v); }
+  .btn-outline { background: transparent; color: var(--vo); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--vo); }
+
+  /* COMPARISON TABLE */
+  .comp-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .comp-table th {
+    background: var(--vo);
+    color: white;
+    padding: 12px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+    letter-spacing: 0.3px;
+  }
+  .comp-table th:first-child { border-radius: 8px 0 0 0; }
+  .comp-table th:last-child { border-radius: 0 8px 0 0; }
+  .comp-table td {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--cr2);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:nth-child(even) td { background: rgba(245,240,232,0.5); }
+  .comp-table .col-stage { font-weight: 600; color: var(--vm); }
+
+  /* INDICATORS */
+  .indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .ind-green { background: rgba(184,212,106,0.2); color: var(--v); }
+  .ind-red { background: rgba(220,80,80,0.1); color: #b03030; }
+  .ind-yellow { background: rgba(201,168,76,0.15); color: #8a6a1a; }
+
+  /* SECTION HEADER */
+  .section-hdr {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-hdr h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--vo);
+  }
+  .section-hdr p { font-size: 13px; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .main { padding: 20px; }
+    .tabs-bar { padding: 0 16px; overflow-x: auto; }
+    .funnel-layout { grid-template-columns: 1fr; }
+    .stage-detail { padding: 20px 0 0; }
+    .stage-panel-body { grid-template-columns: 1fr; }
+    .resumen-grid { grid-template-columns: repeat(3, 1fr); }
+    .page-header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="header-inner">
+    <span class="page-badge">Sesión 4</span>
+    <div>
+      <div class="page-title">Diseño de Embudos de Venta</div>
+      <div class="page-subtitle">Simoné · Mapeo y optimización de 3 embudos por servicio</div>
+    </div>
+    <div class="save-pill">
+      <div class="save-dot"></div>
+      <span id="saveTxt">Auto-guardando...</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('micelio', this)">
+    <div class="tab-dot"></div> 🍄 Micelio
+  </button>
+  <button class="tab-btn" onclick="switchTab('asesoria', this)">
+    <div class="tab-dot"></div> 🌱 Asesorías
+  </button>
+  <button class="tab-btn" onclick="switchTab('talleres', this)">
+    <div class="tab-dot"></div> 🎪 Talleres
+  </button>
+  <button class="tab-btn" onclick="switchTab('comparativo', this)">
+    <div class="tab-dot"></div> 📊 Comparativo
+  </button>
+</div>
+
+<!-- ═══════════════ TAB: MICELIO ═══════════════ -->
+<div class="tab-content active" id="tab-micelio">
+<div class="main">
+  <div class="section-hdr">
+    <div>
+      <h2>🍄 Embudo Micelio</h2>
+      <p>Programa formativo de cultivo y microbioma · Producto ancla de Simoné</p>
+    </div>
+  </div>
+
+  <div class="funnel-layout">
+    <!-- Visual funnel -->
+    <div class="funnel-visual" id="funnelViz-m">
+      <div class="funnel-stage-visual active" onclick="selectStage('m',0)" id="vs-m-0">
+        <div class="funnel-trapeze" style="width:170px;height:44px;background:#1c3a10;">CONCIENCIA</div>
+        <div class="funnel-label">¿Cómo me descubren?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('m',1)" id="vs-m-1">
+        <div class="funnel-trapeze" style="width:145px;height:44px;background:#2d5a1b;">INTERÉS</div>
+        <div class="funnel-label">¿Qué los engancha?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('m',2)" id="vs-m-2">
+        <div class="funnel-trapeze" style="width:118px;height:44px;background:#4a7c2f;">CONSIDERACIÓN</div>
+        <div class="funnel-label">¿Cómo evalúan?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('m',3)" id="vs-m-3">
+        <div class="funnel-trapeze" style="width:90px;height:44px;background:#c9a84c;">CONVERSIÓN</div>
+        <div class="funnel-label">¿Qué los hace comprar?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('m',4)" id="vs-m-4">
+        <div class="funnel-trapeze" style="width:64px;height:44px;background:#8a6a1a;">FIDELIZACIÓN</div>
+        <div class="funnel-label">¿Vuelven? ¿Refieren?</div>
+      </div>
+    </div>
+
+    <!-- Stage detail panels -->
+    <div class="stage-detail" id="stageDetail-m">
+
+      <!-- 0: CONCIENCIA -->
+      <div class="stage-panel active" id="sp-m-0">
+        <div class="stage-panel-header" style="background: rgba(28,58,16,0.04);">
+          <div class="stage-icon-big" style="background:rgba(28,58,16,0.1)">🌐</div>
+          <div>
+            <div class="stage-panel-title">Conciencia</div>
+            <div class="stage-panel-sub">Cómo el cliente ideal descubre que Simoné existe</div>
+          </div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group">
+            <div class="field-label">Canales actuales</div>
+            <textarea class="field-textarea" data-key="m_con_canales" placeholder="Instagram orgánico, referidos de clientes, colaboraciones, LinkedIn..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Contenido que atrae</div>
+            <textarea class="field-textarea" data-key="m_con_contenido" placeholder="Tipo de post, stories, reels que generan más tráfico..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Volumen actual (alcance/mes)</div>
+            <input class="field-input" data-key="m_con_volumen" placeholder="Ej: ~500 personas/mes">
+          </div>
+          <div class="field-group">
+            <div class="field-label">¿Qué se puede mejorar?</div>
+            <input class="field-input" data-key="m_con_mejora" placeholder="Canal a potenciar, frecuencia, formato...">
+          </div>
+          <div class="field-group full">
+            <div class="field-label">CTA de entrada (¿qué se les pide hacer?)</div>
+            <input class="field-input" data-key="m_con_cta" placeholder="Ej: Seguir cuenta, inscribirse al newsletter, unirse al grupo de WhatsApp...">
+          </div>
+        </div>
+      </div>
+
+      <!-- 1: INTERÉS -->
+      <div class="stage-panel" id="sp-m-1">
+        <div class="stage-panel-header" style="background: rgba(45,90,27,0.04);">
+          <div class="stage-icon-big" style="background:rgba(45,90,27,0.1)">💡</div>
+          <div>
+            <div class="stage-panel-title">Interés</div>
+            <div class="stage-panel-sub">Qué hace que alguien quiera saber más sobre Micelio</div>
+          </div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group">
+            <div class="field-label">¿Qué activa el interés?</div>
+            <textarea class="field-textarea" data-key="m_int_activa" placeholder="Ver un resultado, leer testimonio, asistir a charla..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Contenido de nutrición</div>
+            <textarea class="field-textarea" data-key="m_int_nutricion" placeholder="Newsletter, carrusel educativo, live de preguntas..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Lead magnet actual</div>
+            <input class="field-input" data-key="m_int_magnet" placeholder="¿Existe? ¿PDF, clase gratuita, demo?">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Lead magnet ideal (propuesta)</div>
+            <input class="field-input" data-key="m_int_magnet2" placeholder="¿Qué sería valioso regalar para cualificar?">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: CONSIDERACIÓN -->
+      <div class="stage-panel" id="sp-m-2">
+        <div class="stage-panel-header" style="background: rgba(74,124,47,0.04);">
+          <div class="stage-icon-big" style="background:rgba(74,124,47,0.1)">⚖️</div>
+          <div>
+            <div class="stage-panel-title">Consideración</div>
+            <div class="stage-panel-sub">Cómo el prospecto evalúa antes de decidir</div>
+          </div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group">
+            <div class="field-label">¿Cómo pide más información?</div>
+            <textarea class="field-textarea" data-key="m_con2_info" placeholder="DM, WhatsApp, formulario web, llamada..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Objeciones más frecuentes</div>
+            <textarea class="field-textarea" data-key="m_con2_objeciones" placeholder="Precio, tiempo disponible, dudas sobre resultados..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">¿Cómo se resuelven esas objeciones?</div>
+            <textarea class="field-textarea" data-key="m_con2_resoluciones" placeholder="Garantía, sesión de orientación, testimonios, flexibilidad..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Tiempo promedio en esta etapa</div>
+            <input class="field-input" data-key="m_con2_tiempo" placeholder="Ej: 1 semana, 2-3 días...">
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: CONVERSIÓN -->
+      <div class="stage-panel" id="sp-m-3">
+        <div class="stage-panel-header" style="background: rgba(201,168,76,0.06);">
+          <div class="stage-icon-big" style="background:rgba(201,168,76,0.15)">💳</div>
+          <div>
+            <div class="stage-panel-title">Conversión</div>
+            <div class="stage-panel-sub">El momento en que alguien decide inscribirse a Micelio</div>
+          </div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group">
+            <div class="field-label">Mecanismo de compra actual</div>
+            <textarea class="field-textarea" data-key="m_cv_mecanismo" placeholder="Link de pago, transferencia, consignación, Wompi..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Factores de urgencia o escasez</div>
+            <textarea class="field-textarea" data-key="m_cv_urgencia" placeholder="Cupos limitados, fecha de inicio fija, precio especial..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Precio actual del paquete</div>
+            <input class="field-input" data-key="m_cv_precio" placeholder="Ej: $350.000 COP / $1.200.000 COP">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Tasa de conversión estimada</div>
+            <input class="field-input" data-key="m_cv_tasa" placeholder="De cada 10 interesados, cuántos compran...">
+          </div>
+          <div class="field-group full">
+            <div class="field-label">¿Qué mejoraría la tasa de conversión?</div>
+            <input class="field-input" data-key="m_cv_mejora" placeholder="Más prueba social, facilidad de pago, precio más claro...">
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: FIDELIZACIÓN -->
+      <div class="stage-panel" id="sp-m-4">
+        <div class="stage-panel-header" style="background: rgba(138,106,26,0.05);">
+          <div class="stage-icon-big" style="background:rgba(138,106,26,0.1)">🌟</div>
+          <div>
+            <div class="stage-panel-title">Fidelización</div>
+            <div class="stage-panel-sub">Cómo Micelio genera comunidad y referidos</div>
+          </div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group">
+            <div class="field-label">Experiencia post-venta</div>
+            <textarea class="field-textarea" data-key="m_fi_postventa" placeholder="Onboarding, bienvenida, seguimiento durante programa..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">¿Hay recompra o upgrade?</div>
+            <textarea class="field-textarea" data-key="m_fi_recompra" placeholder="Nivel avanzado, asesoría individual, acceso a comunidad..."></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Programa de referidos</div>
+            <input class="field-input" data-key="m_fi_referidos" placeholder="¿Existe? ¿Descuento, comisión, beneficio?">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Comunidad activa</div>
+            <input class="field-input" data-key="m_fi_comunidad" placeholder="Grupo WhatsApp, Telegram, encuentros presenciales...">
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /stageDetail-m -->
+  </div>
+
+  <!-- Métricas Micelio -->
+  <div class="score-section">
+    <div class="score-title">📈 Métricas de Embudo Micelio</div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div>
+        <div class="metric-row">
+          <span class="metric-label">Alcance mensual</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--vo)" id="bar-m-0"></div></div>
+          <input class="metric-input-num" data-bar="m-0" data-key="m_met_alcance" type="number" min="0" max="100" value="0" placeholder="0">
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Interesados activos</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--v)" id="bar-m-1"></div></div>
+          <input class="metric-input-num" data-bar="m-1" data-key="m_met_interesados" type="number" min="0" max="100" value="0" placeholder="0">
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">En consideración</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--vm)" id="bar-m-2"></div></div>
+          <input class="metric-input-num" data-bar="m-2" data-key="m_met_considera" type="number" min="0" max="100" value="0" placeholder="0">
+        </div>
+      </div>
+      <div>
+        <div class="metric-row">
+          <span class="metric-label">Inscritos / cohorte</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--oro)" id="bar-m-3"></div></div>
+          <input class="metric-input-num" data-bar="m-3" data-key="m_met_inscritos" type="number" min="0" max="100" value="0" placeholder="0">
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">% Recompra/referidos</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--oro2)" id="bar-m-4"></div></div>
+          <input class="metric-input-num" data-bar="m-4" data-key="m_met_recompra" type="number" min="0" max="100" value="0" placeholder="0">
+        </div>
+        <div class="field-group" style="margin-top:8px;">
+          <div class="field-label">Cuellos de botella principales</div>
+          <textarea class="field-textarea" data-key="m_met_cuellos" placeholder="¿Dónde se cae más gente? ¿Entre qué etapas hay mayor pérdida?"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ TAB: ASESORÍAS ═══════════════ -->
+<div class="tab-content" id="tab-asesoria">
+<div class="main">
+  <div class="section-hdr">
+    <div>
+      <h2>🌱 Embudo Asesorías</h2>
+      <p>Consultoría especializada para empresas, restaurantes y emprendedores del sector</p>
+    </div>
+  </div>
+
+  <div class="funnel-layout">
+    <div class="funnel-visual" id="funnelViz-a">
+      <div class="funnel-stage-visual active" onclick="selectStage('a',0)" id="vs-a-0">
+        <div class="funnel-trapeze" style="width:170px;height:44px;background:#1c3a10;">CONCIENCIA</div>
+        <div class="funnel-label">¿Cómo me conocen?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('a',1)" id="vs-a-1">
+        <div class="funnel-trapeze" style="width:145px;height:44px;background:#2d5a1b;">INTERÉS</div>
+        <div class="funnel-label">¿Qué los convence?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('a',2)" id="vs-a-2">
+        <div class="funnel-trapeze" style="width:118px;height:44px;background:#4a7c2f;">CONSIDERACIÓN</div>
+        <div class="funnel-label">¿Cómo evalúan?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('a',3)" id="vs-a-3">
+        <div class="funnel-trapeze" style="width:90px;height:44px;background:#c9a84c;">CONVERSIÓN</div>
+        <div class="funnel-label">¿Qué cierra el trato?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('a',4)" id="vs-a-4">
+        <div class="funnel-trapeze" style="width:64px;height:44px;background:#8a6a1a;">RETENCIÓN</div>
+        <div class="funnel-label">¿Renuevan? ¿Amplían?</div>
+      </div>
+    </div>
+
+    <div class="stage-detail" id="stageDetail-a">
+      <div class="stage-panel active" id="sp-a-0">
+        <div class="stage-panel-header" style="background:rgba(28,58,16,0.04)">
+          <div class="stage-icon-big" style="background:rgba(28,58,16,0.1)">🔍</div>
+          <div><div class="stage-panel-title">Conciencia — Asesorías</div><div class="stage-panel-sub">¿Cómo el cliente empresarial descubre a Simoné?</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">Canales de entrada</div><textarea class="field-textarea" data-key="a_con_canales" placeholder="LinkedIn, referidos de clientes, eventos de industria, prensa..."></textarea></div>
+          <div class="field-group"><div class="field-label">Perfil del cliente ideal</div><textarea class="field-textarea" data-key="a_con_perfil" placeholder="Restaurantes, hoteles, marcas funcionales, emprendedores agro..."></textarea></div>
+          <div class="field-group full"><div class="field-label">¿Qué hace que alguien busque una asesoría de hongos?</div><input class="field-input" data-key="a_con_trigger" placeholder="Quieren innovar, reducir costos, certificar, exportar..."></div>
+        </div>
+      </div>
+      <div class="stage-panel" id="sp-a-1">
+        <div class="stage-panel-header" style="background:rgba(45,90,27,0.04)">
+          <div class="stage-icon-big" style="background:rgba(45,90,27,0.1)">💡</div>
+          <div><div class="stage-panel-title">Interés — Asesorías</div><div class="stage-panel-sub">Nutrición y cualificación del prospecto</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">Contenido que demuestra expertise</div><textarea class="field-textarea" data-key="a_int_contenido" placeholder="Casos de éxito, artículos técnicos, charlas, participación en ferias..."></textarea></div>
+          <div class="field-group"><div class="field-label">¿Existe portafolio o dossier?</div><textarea class="field-textarea" data-key="a_int_portfolio" placeholder="¿Tienen presentación de servicios? ¿Casos documentados?"></textarea></div>
+          <div class="field-group full"><div class="field-label">Propuesta de valor diferencial (frase clave)</div><input class="field-input" data-key="a_int_propuesta" placeholder="¿Por qué Simoné vs. una consultora genérica de alimentos?"></div>
+        </div>
+      </div>
+      <div class="stage-panel" id="sp-a-2">
+        <div class="stage-panel-header" style="background:rgba(74,124,47,0.04)">
+          <div class="stage-icon-big" style="background:rgba(74,124,47,0.1)">📋</div>
+          <div><div class="stage-panel-title">Consideración — Asesorías</div><div class="stage-panel-sub">El proceso de evaluación y cotización</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">¿Cómo se hace la cotización?</div><textarea class="field-textarea" data-key="a_con2_cotizacion" placeholder="Reunión diagnóstico, formulario, propuesta escrita..."></textarea></div>
+          <div class="field-group"><div class="field-label">Tiempo promedio de negociación</div><input class="field-input" data-key="a_con2_tiempo" placeholder="Ej: 1-3 semanas"></div>
+          <div class="field-group"><div class="field-label">Objeciones comunes en esta etapa</div><textarea class="field-textarea" data-key="a_con2_objeciones" placeholder="Precio, tiempo del equipo, dudas sobre ROI..."></textarea></div>
+          <div class="field-group"><div class="field-label">¿Quién toma la decisión final?</div><input class="field-input" data-key="a_con2_decisor" placeholder="Gerente, chef ejecutivo, dueño, comité..."></div>
+        </div>
+      </div>
+      <div class="stage-panel" id="sp-a-3">
+        <div class="stage-panel-header" style="background:rgba(201,168,76,0.06)">
+          <div class="stage-icon-big" style="background:rgba(201,168,76,0.15)">🤝</div>
+          <div><div class="stage-panel-title">Conversión — Asesorías</div><div class="stage-panel-sub">Cierre de contrato y onboarding</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">Mecanismo de cierre</div><textarea class="field-textarea" data-key="a_cv_cierre" placeholder="¿Contrato físico, digital, carta de intención, anticipo?"></textarea></div>
+          <div class="field-group"><div class="field-label">Rango de precios actual</div><input class="field-input" data-key="a_cv_precio" placeholder="Desde COP hasta COP por proyecto"></div>
+          <div class="field-group full"><div class="field-label">¿Qué aceleraría el cierre?</div><input class="field-input" data-key="a_cv_acelerador" placeholder="Consulta gratuita, muestra de trabajo, pauta por resultados..."></div>
+        </div>
+      </div>
+      <div class="stage-panel" id="sp-a-4">
+        <div class="stage-panel-header" style="background:rgba(138,106,26,0.05)">
+          <div class="stage-icon-big" style="background:rgba(138,106,26,0.1)">🔄</div>
+          <div><div class="stage-panel-title">Retención — Asesorías</div><div class="stage-panel-sub">Contratos recurrentes y expansión</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">¿Hay clientes que renuevan?</div><textarea class="field-textarea" data-key="a_fi_renueva" placeholder="¿Cuántos? ¿Con qué frecuencia? ¿Por qué vuelven?"></textarea></div>
+          <div class="field-group"><div class="field-label">Upsell / expansión de servicio</div><textarea class="field-textarea" data-key="a_fi_upsell" placeholder="¿Se puede crecer el contrato? ¿Talleres internos, capacitaciones?"></textarea></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="score-section">
+    <div class="score-title">📈 Métricas de Embudo Asesorías</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div>
+        <div class="metric-row">
+          <span class="metric-label">Contactos nuevos/mes</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--vo)" id="bar-a-0"></div></div>
+          <input class="metric-input-num" data-bar="a-0" data-key="a_met_contactos" type="number" min="0" max="100" value="0">
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Propuestas enviadas</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--v)" id="bar-a-1"></div></div>
+          <input class="metric-input-num" data-bar="a-1" data-key="a_met_propuestas" type="number" min="0" max="100" value="0">
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Contratos cerrados/mes</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--oro)" id="bar-a-2"></div></div>
+          <input class="metric-input-num" data-bar="a-2" data-key="a_met_contratos" type="number" min="0" max="100" value="0">
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <div class="field-label">Fricción principal del embudo</div>
+          <textarea class="field-textarea" data-key="a_met_friccion" placeholder="¿En qué etapa se pierden más prospectos?"></textarea>
+        </div>
+        <div class="field-group" style="margin-top:10px;">
+          <div class="field-label">Próxima acción de mejora</div>
+          <input class="field-input" data-key="a_met_proxima" placeholder="Una sola acción concreta para mejorar el embudo">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ TAB: TALLERES ═══════════════ -->
+<div class="tab-content" id="tab-talleres">
+<div class="main">
+  <div class="section-hdr">
+    <div>
+      <h2>🎪 Embudo Talleres & Eventos</h2>
+      <p>Experiencias formativas presenciales y virtuales para comunidad y empresas</p>
+    </div>
+  </div>
+
+  <div class="funnel-layout">
+    <div class="funnel-visual" id="funnelViz-t">
+      <div class="funnel-stage-visual active" onclick="selectStage('t',0)" id="vs-t-0">
+        <div class="funnel-trapeze" style="width:170px;height:44px;background:#1c3a10;">DIFUSIÓN</div>
+        <div class="funnel-label">¿Cómo se enteran?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('t',1)" id="vs-t-1">
+        <div class="funnel-trapeze" style="width:145px;height:44px;background:#2d5a1b;">REGISTRO</div>
+        <div class="funnel-label">¿Cómo se inscriben?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('t',2)" id="vs-t-2">
+        <div class="funnel-trapeze" style="width:118px;height:44px;background:#4a7c2f;">ASISTENCIA</div>
+        <div class="funnel-label">¿Cuántos asisten?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('t',3)" id="vs-t-3">
+        <div class="funnel-trapeze" style="width:90px;height:44px;background:#c9a84c;">CONVERSIÓN</div>
+        <div class="funnel-label">¿Compran más?</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-stage-visual" onclick="selectStage('t',4)" id="vs-t-4">
+        <div class="funnel-trapeze" style="width:64px;height:44px;background:#8a6a1a;">COMUNIDAD</div>
+        <div class="funnel-label">¿Regresan y refieren?</div>
+      </div>
+    </div>
+
+    <div class="stage-detail" id="stageDetail-t">
+      <div class="stage-panel active" id="sp-t-0">
+        <div class="stage-panel-header" style="background:rgba(28,58,16,0.04)">
+          <div class="stage-icon-big" style="background:rgba(28,58,16,0.1)">📢</div>
+          <div><div class="stage-panel-title">Difusión</div><div class="stage-panel-sub">Cómo las personas se enteran de los talleres</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">Canales de difusión actuales</div><textarea class="field-textarea" data-key="t_dif_canales" placeholder="Instagram, WhatsApp, email, aliados, EventBrite..."></textarea></div>
+          <div class="field-group"><div class="field-label">Antelación promedio de anuncio</div><input class="field-input" data-key="t_dif_antelacion" placeholder="Ej: 2 semanas antes, 1 mes antes..."></div>
+          <div class="field-group"><div class="field-label">Tipo de taller más demandado</div><input class="field-input" data-key="t_dif_tipo" placeholder="Cultivo básico, gastronomía, terapéutico, empresas..."></div>
+          <div class="field-group"><div class="field-label">Aliados para difusión</div><textarea class="field-textarea" data-key="t_dif_aliados" placeholder="Tiendas naturistas, coworkings, escuelas de cocina..."></textarea></div>
+        </div>
+      </div>
+      <div class="stage-panel" id="sp-t-1">
+        <div class="stage-panel-header" style="background:rgba(45,90,27,0.04)">
+          <div class="stage-icon-big" style="background:rgba(45,90,27,0.1)">✍️</div>
+          <div><div class="stage-panel-title">Registro</div><div class="stage-panel-sub">Proceso de inscripción y confirmación</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">Mecanismo de registro</div><textarea class="field-textarea" data-key="t_reg_mecanismo" placeholder="Formulario Google, link de pago, DM, EventBrite..."></textarea></div>
+          <div class="field-group"><div class="field-label">¿Se pide anticipo para confirmar cupo?</div><input class="field-input" data-key="t_reg_anticipo" placeholder="Sí/No — ¿Cuánto? ¿Funciona?"></div>
+          <div class="field-group full"><div class="field-label">Tasa de no-show (inscritos que no asisten)</div><input class="field-input" data-key="t_reg_noshow" placeholder="Ej: 20% — ¿Por qué ocurre? ¿Cómo reducirlo?"></div>
+        </div>
+      </div>
+      <div class="stage-panel" id="sp-t-2">
+        <div class="stage-panel-header" style="background:rgba(74,124,47,0.04)">
+          <div class="stage-icon-big" style="background:rgba(74,124,47,0.1)">🎯</div>
+          <div><div class="stage-panel-title">Asistencia</div><div class="stage-panel-sub">Experiencia durante el evento</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">Promedio de asistentes por taller</div><input class="field-input" data-key="t_asi_promedio" placeholder="Ej: 12 personas / cupo máximo 15"></div>
+          <div class="field-group"><div class="field-label">Valoración / NPS promedio</div><input class="field-input" data-key="t_asi_nps" placeholder="¿Tienen encuesta de satisfacción? ¿Resultado?"></div>
+          <div class="field-group"><div class="field-label">Momentos wow del taller</div><textarea class="field-textarea" data-key="t_asi_wow" placeholder="¿Qué parte del taller genera más impacto o emoción?"></textarea></div>
+          <div class="field-group"><div class="field-label">Puntos de mejora en la experiencia</div><textarea class="field-textarea" data-key="t_asi_mejora" placeholder="Logística, materiales, duración, follow-up..."></textarea></div>
+        </div>
+      </div>
+      <div class="stage-panel" id="sp-t-3">
+        <div class="stage-panel-header" style="background:rgba(201,168,76,0.06)">
+          <div class="stage-icon-big" style="background:rgba(201,168,76,0.15)">🛒</div>
+          <div><div class="stage-panel-title">Conversión</div><div class="stage-panel-sub">Ventas adicionales derivadas del taller</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">¿Qué se vende en o después del taller?</div><textarea class="field-textarea" data-key="t_cv_venta" placeholder="Kits de cultivo, inscripción a Micelio, asesoría, productos..."></textarea></div>
+          <div class="field-group"><div class="field-label">% que compra algo adicional</div><input class="field-input" data-key="t_cv_pct" placeholder="De 10 asistentes, cuántos compran algo más..."></div>
+          <div class="field-group full"><div class="field-label">CTA al final del taller</div><input class="field-input" data-key="t_cv_cta" placeholder="¿Qué se les invita a hacer antes de irse?"></div>
+        </div>
+      </div>
+      <div class="stage-panel" id="sp-t-4">
+        <div class="stage-panel-header" style="background:rgba(138,106,26,0.05)">
+          <div class="stage-icon-big" style="background:rgba(138,106,26,0.1)">🌐</div>
+          <div><div class="stage-panel-title">Comunidad</div><div class="stage-panel-sub">Mantener vivo el vínculo post-taller</div></div>
+        </div>
+        <div class="stage-panel-body">
+          <div class="field-group"><div class="field-label">Follow-up post-taller</div><textarea class="field-textarea" data-key="t_fi_followup" placeholder="Email de gracias, material complementario, encuesta..."></textarea></div>
+          <div class="field-group"><div class="field-label">¿Cuántos repiten en otro taller?</div><input class="field-input" data-key="t_fi_repiten" placeholder="% de asistentes que vuelven a otro taller"></div>
+          <div class="field-group full"><div class="field-label">Espacio de comunidad activo</div><input class="field-input" data-key="t_fi_comunidad" placeholder="Grupo WhatsApp, meetup mensual, newsletter..."></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="score-section">
+    <div class="score-title">📈 Métricas de Talleres</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div>
+        <div class="metric-row">
+          <span class="metric-label">Talleres por mes</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--vo)" id="bar-t-0"></div></div>
+          <input class="metric-input-num" data-bar="t-0" data-key="t_met_talleres" type="number" min="0" max="100" value="0">
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Asistentes promedio</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--v)" id="bar-t-1"></div></div>
+          <input class="metric-input-num" data-bar="t-1" data-key="t_met_asistentes" type="number" min="0" max="100" value="0">
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">% ocupación por taller</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="background:var(--vc)" id="bar-t-2"></div></div>
+          <input class="metric-input-num" data-bar="t-2" data-key="t_met_ocupacion" type="number" min="0" max="100" value="0">
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <div class="field-label">Ingreso mensual por talleres</div>
+          <input class="field-input" data-key="t_met_ingreso" placeholder="COP promedio por mes">
+        </div>
+        <div class="field-group" style="margin-top:10px;">
+          <div class="field-label">Oportunidad de crecimiento</div>
+          <textarea class="field-textarea" data-key="t_met_oportunidad" placeholder="¿Qué falta para llenar todos los cupos siempre?"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ TAB: COMPARATIVO ═══════════════ -->
+<div class="tab-content" id="tab-comparativo">
+<div class="main">
+  <div class="section-hdr">
+    <div>
+      <h2>📊 Vista Comparativa de Embudos</h2>
+      <p>Análisis cruzado de los 3 embudos · Priorización de mejoras</p>
+    </div>
+  </div>
+
+  <div style="background:var(--white); border-radius:16px; border:1px solid var(--border); overflow:hidden; box-shadow:var(--shadow); margin-bottom:24px;">
+    <table class="comp-table" id="compTable">
+      <thead>
+        <tr>
+          <th>Dimensión</th>
+          <th>🍄 Micelio</th>
+          <th>🌱 Asesorías</th>
+          <th>🎪 Talleres</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-stage">Madurez del embudo</td>
+          <td><select class="field-input" data-key="comp_micelio_madurez" style="min-height:auto;padding:6px 10px;"><option value="">Seleccionar</option><option>🔴 Por construir</option><option>🟡 En desarrollo</option><option>🟢 Funcionando</option></select></td>
+          <td><select class="field-input" data-key="comp_asesoria_madurez" style="min-height:auto;padding:6px 10px;"><option value="">Seleccionar</option><option>🔴 Por construir</option><option>🟡 En desarrollo</option><option>🟢 Funcionando</option></select></td>
+          <td><select class="field-input" data-key="comp_talleres_madurez" style="min-height:auto;padding:6px 10px;"><option value="">Seleccionar</option><option>🔴 Por construir</option><option>🟡 En desarrollo</option><option>🟢 Funcionando</option></select></td>
+        </tr>
+        <tr>
+          <td class="col-stage">Mayor fortaleza</td>
+          <td><input class="field-input" data-key="comp_micelio_fortaleza" placeholder="Ej: Comunidad leal"></td>
+          <td><input class="field-input" data-key="comp_asesoria_fortaleza" placeholder="Ej: Proceso de cotización claro"></td>
+          <td><input class="field-input" data-key="comp_talleres_fortaleza" placeholder="Ej: Alto NPS"></td>
+        </tr>
+        <tr>
+          <td class="col-stage">Mayor brecha</td>
+          <td><input class="field-input" data-key="comp_micelio_brecha" placeholder="Ej: Sin CTA claro"></td>
+          <td><input class="field-input" data-key="comp_asesoria_brecha" placeholder="Ej: Ciclo de venta largo"></td>
+          <td><input class="field-input" data-key="comp_talleres_brecha" placeholder="Ej: Sin follow-up post-taller"></td>
+        </tr>
+        <tr>
+          <td class="col-stage">Próxima acción #1</td>
+          <td><input class="field-input" data-key="comp_micelio_accion" placeholder="Acción concreta..."></td>
+          <td><input class="field-input" data-key="comp_asesoria_accion" placeholder="Acción concreta..."></td>
+          <td><input class="field-input" data-key="comp_talleres_accion" placeholder="Acción concreta..."></td>
+        </tr>
+        <tr>
+          <td class="col-stage">Responsable</td>
+          <td><input class="field-input" data-key="comp_micelio_resp" placeholder="Nathalia / Jorge / Equipo"></td>
+          <td><input class="field-input" data-key="comp_asesoria_resp" placeholder="Nathalia / Jorge / Equipo"></td>
+          <td><input class="field-input" data-key="comp_talleres_resp" placeholder="Nathalia / Jorge / Equipo"></td>
+        </tr>
+        <tr>
+          <td class="col-stage">Fecha límite</td>
+          <td><input class="field-input" data-key="comp_micelio_fecha" placeholder="dd/mm"></td>
+          <td><input class="field-input" data-key="comp_asesoria_fecha" placeholder="dd/mm"></td>
+          <td><input class="field-input" data-key="comp_talleres_fecha" placeholder="dd/mm"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="score-section" style="margin-bottom:24px;">
+    <div class="score-title">🎯 Embudo Prioritario para Sesión 4</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+      <div>
+        <div class="field-group">
+          <div class="field-label">¿Cuál embudo trabajar primero y por qué?</div>
+          <textarea class="field-textarea" data-key="comp_prioridad" placeholder="El que tiene mayor impacto en ingresos inmediatos, o el que está más cerca de funcionar con pequeños ajustes..."></textarea>
+        </div>
+        <div class="field-group" style="margin-top:12px;">
+          <div class="field-label">Hipótesis de crecimiento (si arreglamos X, pasa Y)</div>
+          <textarea class="field-textarea" data-key="comp_hipotesis" placeholder="Ej: Si activamos un CTA claro en Micelio, estimamos llenar la próxima cohorte con 30% menos esfuerzo..."></textarea>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <div class="field-label">Recursos necesarios (¿qué falta para activar los embudos?)</div>
+          <textarea class="field-textarea" data-key="comp_recursos" placeholder="Landing page, herramienta de pago, contenido, equipo, aliados..."></textarea>
+        </div>
+        <div class="field-group" style="margin-top:12px;">
+          <div class="field-label">¿Qué se puede hacer esta semana sin costo?</div>
+          <textarea class="field-textarea" data-key="comp_semana" placeholder="Acción inmediata, de bajo costo y alto impacto..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="export-bar">
+    <button class="btn btn-primary" onclick="exportarResumen()">📋 Exportar resumen comparativo</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ Imprimir</button>
+    <button class="btn btn-outline" onclick="limpiar()">🗑️ Limpiar todo</button>
+  </div>
+</div>
+</div>
+
+<script>
+const LS_KEY = 'simone_embudos_v1';
+let saveTimer;
+let activeStages = { m: 0, a: 0, t: 0 };
+
+// ── TABS ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── STAGE SELECTION ──
+function selectStage(funnel, idx) {
+  // Hide all panels for this funnel
+  for (let i = 0; i < 5; i++) {
+    const panel = document.getElementById('sp-' + funnel + '-' + i);
+    const vis = document.getElementById('vs-' + funnel + '-' + i);
+    if (panel) panel.classList.remove('active');
+    if (vis) vis.classList.remove('active');
+  }
+  // Show selected
+  const p = document.getElementById('sp-' + funnel + '-' + idx);
+  const v = document.getElementById('vs-' + funnel + '-' + idx);
+  if (p) p.classList.add('active');
+  if (v) v.classList.add('active');
+  activeStages[funnel] = idx;
+}
+
+// ── METRIC BARS ──
+document.querySelectorAll('.metric-input-num').forEach(input => {
+  input.addEventListener('input', function() {
+    const barId = 'bar-' + this.dataset.bar;
+    const bar = document.getElementById(barId);
+    if (bar) bar.style.width = Math.min(this.value, 100) + '%';
+    scheduleSave();
+  });
+});
+
+// ── AUTO-SAVE ──
+function getState() {
+  const state = { fields: {}, selects: {}, activeStages };
+  document.querySelectorAll('[data-key]').forEach(el => {
+    state.fields[el.dataset.key] = el.tagName === 'SELECT' ? el.value : (el.value || '');
+  });
+  return state;
+}
+
+function applyState(state) {
+  if (!state) return;
+  if (state.fields) {
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const val = state.fields[el.dataset.key];
+      if (val !== undefined) {
+        el.value = val;
+        // Update bar if it's a metric
+        const bar = el.dataset.bar;
+        if (bar) {
+          const b = document.getElementById('bar-' + bar);
+          if (b) b.style.width = Math.min(parseFloat(val)||0, 100) + '%';
+        }
+      }
+    });
+  }
+  if (state.activeStages) {
+    Object.keys(state.activeStages).forEach(f => {
+      selectStage(f, state.activeStages[f]);
+    });
+  }
+}
+
+function saveState() {
+  localStorage.setItem(LS_KEY, JSON.stringify(getState()));
+  const el = document.getElementById('saveTxt');
+  el.textContent = 'Guardado · ' + new Date().toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit'});
+  setTimeout(() => { el.textContent = 'Auto-guardando...'; }, 3000);
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 700);
+}
+
+document.querySelectorAll('[data-key]').forEach(el => {
+  el.addEventListener('input', scheduleSave);
+  el.addEventListener('change', scheduleSave);
+});
+
+// ── EXPORT ──
+function exportarResumen() {
+  const lines = ['RESUMEN COMPARATIVO — EMBUDOS SIMONÉ', '='.repeat(45), ''];
+  const keys = [
+    ['comp_micelio_madurez', 'comp_asesoria_madurez', 'comp_talleres_madurez', 'MADUREZ'],
+    ['comp_micelio_fortaleza', 'comp_asesoria_fortaleza', 'comp_talleres_fortaleza', 'FORTALEZA'],
+    ['comp_micelio_brecha', 'comp_asesoria_brecha', 'comp_talleres_brecha', 'BRECHA'],
+    ['comp_micelio_accion', 'comp_asesoria_accion', 'comp_talleres_accion', 'PRÓXIMA ACCIÓN'],
+    ['comp_micelio_fecha', 'comp_asesoria_fecha', 'comp_talleres_fecha', 'FECHA'],
+  ];
+  const funnels = ['Micelio', 'Asesorías', 'Talleres'];
+  keys.forEach(row => {
+    lines.push('[' + row[3] + ']');
+    for (let i = 0; i < 3; i++) {
+      const val = getFieldVal(row[i]);
+      if (val) lines.push('  ' + funnels[i] + ': ' + val);
+    }
+    lines.push('');
+  });
+  ['comp_prioridad','comp_hipotesis','comp_recursos','comp_semana'].forEach(k => {
+    const el = document.querySelector('[data-key="' + k + '"]');
+    if (el && el.value.trim()) {
+      lines.push('[' + k.replace('comp_','').toUpperCase() + ']');
+      lines.push(el.value.trim());
+      lines.push('');
+    }
+  });
+  const blob = new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Embudos-Comparativo-Simone.txt';
+  a.click();
+}
+
+function getFieldVal(key) {
+  const el = document.querySelector('[data-key="' + key + '"]');
+  return el ? el.value.trim() : '';
+}
+
+function limpiar() {
+  if (!confirm('¿Borrar todos los datos de embudos?')) return;
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem(LS_KEY);
+  if (saved) {
+    try { applyState(JSON.parse(saved)); } catch(e) {}
+  }
+});
+</script>
+</body>
+</html>
